@@ -44,22 +44,23 @@ requestHandler.upload = function( response, request ) {
             return;
         }
 
-        fs.renameSync( files.upload.path, "/Temp/" + files.upload.name );
+        fs.renameSync( files.upload.path, "/tmp/" + files.upload.name );
 
         response.writeHead( 200, { "Content-Type" : "text/html" } );
         response.write( "received image <br />" );
-        response.end( "<img src='/show?i=" + files.upload.name + "' />" );
+        response.write( "<img src='/show?i=" + files.upload.name + "' />" );
+        response.end();
                 
     });
 };
 
 requestHandler.show = function( response, request ) {
     console.log( "Request handler 'show' was called. " );
-        
-    var image = qs.parse( url.parse( request.url ).query ).i;
-
+    
+    var image = qs.parse( url.parse( request.url ).query ).i; // Parse out the query string variable
+    
     if( !image ){
-        response.writeHead( 500, { "Content-Type" : "text/plain" } );
+        response.writeHead( 500, { "Content-Type" : "text/plain" } );        
         response.end( " No Image in QueryString ");
         return;
     }
@@ -79,7 +80,8 @@ requestHandler.show = function( response, request ) {
         response.end( file, "binary" );
 
     });
-};
+   
+}
 
 
 exports.start   = requestHandler.start;
